@@ -11,3 +11,7 @@ body {
 .pin {
  stroke: #037F9B;
 }
+
+.popup {
+  max-width: 400px;
+}
