@@ -12,6 +12,10 @@ body {
  stroke: #037F9B;
 }
 
+.pin-temp{
+  stroke: rgb(133, 133, 33);
+}
+
 .popup {
   max-width: 400px;
 }

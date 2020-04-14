@@ -7,6 +7,7 @@
 
     const [visitEntries, setVisitEntries] = useState([]);
     const [showPopUp, setShowPopUp] = useState({});
+    const [addEntryLocation, setAddEntryLocation] = useState(null);
     const [viewport, setViewport] = useState({
       width: '100vw',
       height: '50vh',
@@ -24,7 +25,13 @@
     }, []);
 
     const showAddNewPopUp = (event) => {
-      setShowPopUp({})
+      event.preventDefault();
+      setShowPopUp({});
+      const [long, lat] = event.lngLat;
+      setAddEntryLocation({
+        long: long,
+        lat: lat,
+      });
       console.log(event);
     };
 
@@ -35,7 +42,9 @@
         mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
         onViewportChange={setViewport}
         onClick={() => setShowPopUp({})}
-        onDblClick={showAddNewPopUp}
+        onContextMenu={showAddNewPopUp}
+        dragRotate={false}
+        touchRotate={false}
       >  
 
       {
@@ -66,8 +75,7 @@
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                 <circle cx="12" cy="10" r="3"></circle>
               </svg>
-            </Marker>
-              
+            </Marker>     
               {
                 showPopUp[each._id] &&
                 <Popup
@@ -78,16 +86,47 @@
                 <div className="popup"> 
                   <h3>{each.title}</h3>  
                   <p>{each.comments}</p>
-              <small>I've visited on {new Date(each.visitDate).toLocaleString()}</small>
+                  <small>I've visited on {new Date(each.visitDate).toLocaleString()}</small>
                 </div>
                 </Popup>
-            }
-            
-
-
-            </div>
-  
+              }
+          </div>
         ))
+      }
+      {
+          addEntryLocation && 
+          <div>
+            <Marker 
+              latitude={addEntryLocation.lat}
+              longitude={addEntryLocation.long}
+              captureClick={true}
+              offsetLeft={-12}
+              offsetTop={-24}
+            > 
+            <svg className='pin-temp' 
+            viewBox="0 0 24 24"
+              style={ {
+                width: '24',
+                height: '24'
+              }}
+              strokeWidth="2" 
+              fill="none" 
+              strokeLinecap="round" 
+              strokeinejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+            </Marker>  
+            <Popup
+              latitude={addEntryLocation.lat}
+              longitude={addEntryLocation.long}
+              onClose={() => setAddEntryLocation(null)}
+              anchor="top">
+              <div className="popup"> 
+                <small>New marker</small>  
+              </div>
+            </Popup>
+          </div>
       }
 
       </ReactMapGL>
